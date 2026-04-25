@@ -574,12 +574,97 @@
     }
 
     /* ============================================================
+       Dark mode tokens
+       ============================================================ */
+    [data-theme="dark"] {
+      --bg:           #0D1B2A;
+      --bg-surface:   #162535;
+      --bg-code:      #111E2C;
+      --bg-subtle:    #1C2F42;
+      --fg:           #DDE6EE;
+      --fg2:          #8FA8BE;
+      --fg3:          #4E6578;
+      --fg-on-accent: #FFFFFF;
+      --accent:       #3FA3B8;
+      --accent-light: #183040;
+      --accent-hover: #50C0D8;
+      --warm:         #D4845E;
+      --warm-light:   #2A1810;
+      --warm-hover:   #E09070;
+      --border:       #253545;
+      --border-hover: #354555;
+      --shadow-1: 0 1px 3px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
+      --shadow-2: 0 4px 16px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.30);
+    }
+
+    /* ============================================================
+       Theme toggle button
+       ============================================================ */
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 5px 8px;
+      cursor: pointer;
+      color: var(--fg2);
+      display: flex;
+      align-items: center;
+      margin-left: 16px;
+      transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+    .theme-toggle:hover {
+      color: var(--fg);
+      background: var(--bg-subtle);
+      border-color: var(--border-hover);
+    }
+    .theme-toggle svg { width: 15px; height: 15px; display: block; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-sun  { display: none; }
+    .icon-moon { display: block; }
+    [data-theme="dark"] .icon-sun  { display: block; }
+    [data-theme="dark"] .icon-moon { display: none; }
+
+    /* ============================================================
+       Hero photo layout
+       ============================================================ */
+    .hero { max-width: 760px; }
+
+    .hero-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 48px;
+    }
+    .hero-content { flex: 1; min-width: 0; }
+    .hero-photo-wrap { flex-shrink: 0; padding-top: 8px; }
+    .hero-avatar {
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      border: 2px solid var(--border);
+      display: block;
+      transition: border-color 250ms ease;
+    }
+
+    /* ============================================================
+       Card thumbnail images
+       ============================================================ */
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ============================================================
        Responsive
        ============================================================ */
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       .nav { padding: 0 var(--space-4); }
       .nav-links { gap: 16px; }
       .hero { padding: 48px var(--space-4) 64px; }
+      .hero-layout { flex-direction: column-reverse; gap: 20px; }
+      .hero-avatar { width: 88px; height: 88px; }
       .updates { padding: 0 var(--space-4) 64px; }
       .research-section { padding: var(--space-6) var(--space-4) 64px; }
       .cv-section { padding: var(--space-6) var(--space-4) 64px; }
@@ -596,12 +681,18 @@
        ============================================================ -->
   <header class="nav" id="nav">
     <button class="nav-logo" onclick="navigate('about')">Michael Qi</button>
-    <nav>
+    <nav style="display:flex;align-items:center;">
       <ul class="nav-links">
         <li><button class="nav-link active" data-page="about"    onclick="navigate('about')">about</button></li>
         <li><button class="nav-link"        data-page="research" onclick="navigate('research')">research</button></li>
         <li><button class="nav-link"        data-page="cv"       onclick="navigate('cv')">cv</button></li>
       </ul>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+        <!-- Sun — shown in dark mode -->
+        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <!-- Moon — shown in light mode -->
+        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
     </nav>
   </header>
 
@@ -613,27 +704,34 @@
     <!-- About Page -->
     <div id="page-about" class="page active">
       <section class="hero">
-        <p class="hero-eyebrow">PhD Student &middot; ML Systems &amp; Generative AI</p>
-        <h1 class="hero-heading">
-          Hi, I'm Michael.<br>
-          <span class="hero-heading-muted">I build efficient systems for AI.</span>
-        </h1>
-        <p class="hero-body">
-          I'm a PhD student at USC's <a href="https://sportlab.usc.edu" target="_blank" rel="noopener">SPORT Lab</a>,
-          advised by Professor Massoud Pedram. My research focuses on the intersection of machine
-          learning systems and generative AI, specifically working with autoregressive models, GANs,
-          and diffusion models. I'm excited to dive deep into how we can optimize these architectures
-          for the next generation of AI applications.
-        </p>
-        <div class="hero-actions">
-          <button class="btn btn-primary" onclick="navigate('research')">View research</button>
-          <button class="btn btn-secondary" onclick="navigate('cv')">View CV</button>
-        </div>
-        <div class="hero-links">
-          <a class="hero-link" href="https://scholar.google.com/citations?user=pv8GmuwAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
-          <a class="hero-link" href="https://github.com/mordom01" target="_blank" rel="noopener">GitHub</a>
-          <a class="hero-link" href="https://linkedin.com/in/xiangboqi/" target="_blank" rel="noopener">LinkedIn</a>
-          <a class="hero-link" href="mailto:qim@usc.edu">Email</a>
+        <div class="hero-layout">
+          <div class="hero-content">
+            <p class="hero-eyebrow">PhD Student &middot; ML Systems &amp; Generative AI</p>
+            <h1 class="hero-heading">
+              Hi, I'm Michael.<br>
+              <span class="hero-heading-muted">I build efficient systems for AI.</span>
+            </h1>
+            <p class="hero-body">
+              I'm a PhD student at USC's <a href="https://sportlab.usc.edu" target="_blank" rel="noopener">SPORT Lab</a>,
+              advised by Professor Massoud Pedram. My research focuses on the intersection of machine
+              learning systems and generative AI, specifically working with autoregressive models, GANs,
+              and diffusion models. I'm excited to dive deep into how we can optimize these architectures
+              for the next generation of AI applications.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="navigate('research')">View research</button>
+              <button class="btn btn-secondary" onclick="navigate('cv')">View CV</button>
+            </div>
+            <div class="hero-links">
+              <a class="hero-link" href="https://scholar.google.com/citations?user=pv8GmuwAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
+              <a class="hero-link" href="https://github.com/mordom01" target="_blank" rel="noopener">GitHub</a>
+              <a class="hero-link" href="https://linkedin.com/in/xiangboqi/" target="_blank" rel="noopener">LinkedIn</a>
+              <a class="hero-link" href="mailto:qim@usc.edu">Email</a>
+            </div>
+          </div>
+          <div class="hero-photo-wrap">
+            <img src="IMG_1225.jpg" alt="Michael Qi" class="hero-avatar">
+          </div>
         </div>
       </section>
 
@@ -687,7 +785,7 @@
         <div class="cards-grid">
 
           <div class="card" onclick="window.open('https://arxiv.org/abs/2604.02556','_blank')" style="cursor:pointer;">
-            <div class="card-thumb" style="background: #E3F2F5;"></div>
+            <div class="card-thumb"><img src="nf4.png" alt="NF4 dequantization kernel performance"></div>
             <div class="card-body">
               <div class="card-top">
                 <div class="card-title">Fast NF4 Dequantization Kernels for Large Language Model Inference</div>
@@ -710,7 +808,7 @@
           </div>
 
           <div class="card" onclick="window.open('https://ieeexplore.ieee.org/document/11440119','_blank')" style="cursor:pointer;">
-            <div class="card-thumb" style="background: #EBF0F5;"></div>
+            <div class="card-thumb"><img src="icyhot.png" alt="Icy-Hot superconducting CPU architecture diagram"></div>
             <div class="card-body">
               <div class="card-top">
                 <div class="card-title">Icy-Hot: Decoupled Compute Paradigm Towards a General-Purpose Superconducting CPU Design</div>
@@ -739,7 +837,7 @@
           <div class="cards-grid">
 
             <div class="card" onclick="window.open('https://devpost.com/software/nowaste-ai','_blank')" style="cursor:pointer;">
-              <div class="card-thumb" style="background: #F7EDE7;"></div>
+              <div class="card-thumb"><img src="nowaste.png" alt="NoWaste.ai screenshot"></div>
               <div class="card-body">
                 <div class="card-top">
                   <div class="card-title">NoWaste.ai</div>
@@ -880,6 +978,14 @@
        Scripts
        ============================================================ -->
   <script>
+    // Restore theme before first paint
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.dataset.theme = 'dark';
+    })();
+
     // Year in footer
     document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -887,6 +993,13 @@
     window.addEventListener('scroll', () => {
       document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
     }, { passive: true });
+
+    // Dark / light toggle
+    function toggleTheme() {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem('theme', next);
+    }
 
     // Page routing
     function navigate(page) {
