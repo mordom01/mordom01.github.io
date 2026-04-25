@@ -366,6 +366,16 @@
       flex-wrap: wrap;
     }
 
+    .card-citation {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--fg3);
+      line-height: 1.5;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
     /* ============================================================
        Tags
        ============================================================ */
@@ -590,7 +600,6 @@
       <ul class="nav-links">
         <li><button class="nav-link active" data-page="about"    onclick="navigate('about')">about</button></li>
         <li><button class="nav-link"        data-page="research" onclick="navigate('research')">research</button></li>
-        <li><button class="nav-link"        data-page="projects" onclick="navigate('projects')">projects</button></li>
         <li><button class="nav-link"        data-page="cv"       onclick="navigate('cv')">cv</button></li>
       </ul>
     </nav>
@@ -677,23 +686,26 @@
         </div>
         <div class="cards-grid">
 
-          <div class="card">
+          <div class="card" onclick="window.open('https://arxiv.org/abs/2604.02556','_blank')" style="cursor:pointer;">
             <div class="card-thumb" style="background: #E3F2F5;"></div>
             <div class="card-body">
               <div class="card-top">
-                <div class="card-title">Fast NF4 Dequantization Kernels for LLM Inference</div>
+                <div class="card-title">Fast NF4 Dequantization Kernels for Large Language Model Inference</div>
                 <div class="card-year">2026</div>
               </div>
               <p class="card-description">
-                High-throughput CUDA kernels for NF4 weight dequantization, targeting
-                large language model inference workloads. Reduces memory bandwidth pressure
-                and improves token throughput on modern GPUs.
+                NF4 quantization reduces LLM memory footprint 4×, but dequantization back to FP16
+                creates a throughput bottleneck on current GPUs. We present a lightweight shared
+                memory optimization achieving 2.0–2.2× kernel speedup and up to 1.54× end-to-end
+                improvement — a plug-and-play solution for the HuggingFace ecosystem.
               </p>
               <div class="card-tags">
                 <span class="tag tag-accent">ML Systems</span>
                 <span class="tag tag-default">CUDA</span>
                 <span class="tag tag-default">LLM Inference</span>
+                <span class="tag tag-warm">EMC2 @ ASPLOS 2026</span>
               </div>
+              <div class="card-citation">X. Qi, C. Jiang, M. Annavaram &middot; arXiv:2604.02556</div>
             </div>
           </div>
 
@@ -701,79 +713,57 @@
             <div class="card-thumb" style="background: #EBF0F5;"></div>
             <div class="card-body">
               <div class="card-top">
-                <div class="card-title">Icy-Hot: Decoupled Compute Paradigm for Superconducting CPUs</div>
-                <div class="card-year">2025</div>
+                <div class="card-title">Icy-Hot: Decoupled Compute Paradigm Towards a General-Purpose Superconducting CPU Design</div>
+                <div class="card-year">2026</div>
               </div>
               <p class="card-description">
-                A general-purpose superconducting CPU design built on a decoupled compute
-                paradigm, separating control and datapath logic to exploit the unique
-                energy characteristics of Josephson junction devices. Published in IEEE.
+                Proposes a novel granular decoupling of pipeline stages in an SFQ CPU design,
+                exploiting the ultra-fast switching of Josephson Junction logic while managing
+                JJ density constraints. SFQ circuits can be orders of magnitude more
+                energy-efficient than CMOS, making them a strong candidate for post-Moore computing.
               </p>
               <div class="card-tags">
                 <span class="tag tag-accent">Computer Architecture</span>
-                <span class="tag tag-default">IEEE</span>
                 <span class="tag tag-default">Superconducting</span>
+                <span class="tag tag-default">Post-CMOS</span>
+                <span class="tag tag-warm">IEEE Trans. Appl. Supercond.</span>
               </div>
+              <div class="card-citation">T. Renduchintala, J. Lee, H. Zha, M. Qi, M. Annavaram &middot; IEEE Trans. Appl. Supercond., Mar. 2026</div>
             </div>
           </div>
 
+        </div>
+
+        <div style="margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--border);">
+          <h3 style="font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; color: var(--fg3); margin: 0 0 20px;">Projects</h3>
+          <div class="cards-grid">
+
+            <div class="card" onclick="window.open('https://devpost.com/software/nowaste-ai','_blank')" style="cursor:pointer;">
+              <div class="card-thumb" style="background: #F7EDE7;"></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div class="card-title">NoWaste.ai</div>
+                  <div class="card-year">2024</div>
+                </div>
+                <p class="card-description">
+                  A practical and scalable solution to everyday food waste. Uses GPT-4 Vision
+                  and LLAMA 70B to analyze photos and storage conditions, helping users determine
+                  whether food is still safe to eat.
+                </p>
+                <div class="card-tags">
+                  <span class="tag tag-accent">Generative AI</span>
+                  <span class="tag tag-default">Flask</span>
+                  <span class="tag tag-default">React</span>
+                  <span class="tag tag-warm">TreeHacks 2024 Winner</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
     </div>
 
-    <!-- Projects Page -->
-    <div id="page-projects" class="page">
-      <section class="research-section">
-        <div class="section-intro">
-          <h2 class="section-title">Projects</h2>
-          <p class="section-description">
-            Side projects and engineering work outside of formal research — things I've built
-            to explore ideas or sharpen a skill.
-          </p>
-        </div>
-        <div class="cards-grid">
-
-          <div class="card">
-            <div class="card-thumb" style="background: #E3F2F5;"></div>
-            <div class="card-body">
-              <div class="card-top">
-                <div class="card-title">NF4 Kernel Benchmarks</div>
-                <div class="card-year">2026</div>
-              </div>
-              <p class="card-description">
-                Open-source benchmark suite for evaluating dequantization kernel performance
-                across quantization schemes (NF4, INT8, FP8) on NVIDIA GPUs.
-              </p>
-              <div class="card-tags">
-                <span class="tag tag-accent">Open Source</span>
-                <span class="tag tag-default">CUDA</span>
-                <span class="tag tag-default">Python</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-thumb" style="background: #EBF0F5;"></div>
-            <div class="card-body">
-              <div class="card-top">
-                <div class="card-title">mordom01.github.io</div>
-                <div class="card-year">2026</div>
-              </div>
-              <p class="card-description">
-                This site. Plain HTML/CSS/JS, no build step. Design system from
-                <a href="https://claude.ai/design" target="_blank" rel="noopener">Claude Design</a>,
-                built with Claude Code.
-              </p>
-              <div class="card-tags">
-                <span class="tag tag-default">Design</span>
-                <span class="tag tag-accent">Open Source</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-    </div>
 
     <!-- CV Page -->
     <div id="page-cv" class="page">
@@ -830,13 +820,16 @@
             <div class="cv-years">2026</div>
             <div>
               <div class="cv-entry-title">Fast NF4 Dequantization Kernels for Large Language Model Inference</div>
+              <div class="cv-entry-place">EMC2 Workshop at ASPLOS 2026</div>
+              <div class="cv-entry-detail">X. Qi, C. Jiang, M. Annavaram &middot; <a href="https://arxiv.org/abs/2604.02556" target="_blank" rel="noopener">arXiv:2604.02556</a></div>
             </div>
           </div>
           <div class="cv-entry">
-            <div class="cv-years">2025</div>
+            <div class="cv-years">2026</div>
             <div>
               <div class="cv-entry-title">Icy-Hot: Decoupled Compute Paradigm Towards a General-Purpose Superconducting CPU Design</div>
-              <div class="cv-entry-place">IEEE</div>
+              <div class="cv-entry-place">IEEE Transactions on Applied Superconductivity</div>
+              <div class="cv-entry-detail">T. Renduchintala, J. Lee, H. Zha, M. Qi, M. Annavaram</div>
             </div>
           </div>
         </div>
