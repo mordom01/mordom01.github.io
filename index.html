@@ -115,6 +115,9 @@
       -webkit-backdrop-filter: blur(12px);
       border-color: var(--border);
     }
+    [data-theme="dark"] .nav.scrolled {
+      background: rgba(13, 27, 42, 0.88);
+    }
 
     .nav-logo {
       font-family: var(--font-display);
@@ -626,24 +629,27 @@
     /* ============================================================
        Hero photo layout
        ============================================================ */
-    .hero { max-width: 760px; }
-
-    .hero-layout {
-      display: flex;
-      align-items: flex-start;
-      gap: 48px;
-    }
-    .hero-content { flex: 1; min-width: 0; }
-    .hero-photo-wrap { flex-shrink: 0; padding-top: 8px; }
-    .hero-avatar {
-      width: 148px;
-      height: 148px;
+    .hero-photo-wrap {
+      float: right;
+      margin-top: 24px;
+      margin-left: 32px;
+      margin-bottom: 16px;
+      width: 220px;
+      height: 220px;
       border-radius: 50%;
-      object-fit: cover;
-      object-position: center top;
+      overflow: hidden;
       border: 2px solid var(--border);
-      display: block;
       transition: border-color 250ms ease;
+      flex-shrink: 0;
+    }
+    .hero::after { content: ''; display: table; clear: both; }
+    .hero-avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 72%;
+      display: block;
+      transform: scale(1.25);
     }
 
     /* ============================================================
@@ -663,8 +669,8 @@
       .nav { padding: 0 var(--space-4); }
       .nav-links { gap: 16px; }
       .hero { padding: 48px var(--space-4) 64px; }
-      .hero-layout { flex-direction: column-reverse; gap: 20px; }
-      .hero-avatar { width: 88px; height: 88px; }
+      .hero-photo-wrap { float: none; margin: 0 0 20px 0; }
+      .hero-avatar { width: 96px; height: 96px; }
       .updates { padding: 0 var(--space-4) 64px; }
       .research-section { padding: var(--space-6) var(--space-4) 64px; }
       .cv-section { padding: var(--space-6) var(--space-4) 64px; }
@@ -704,34 +710,30 @@
     <!-- About Page -->
     <div id="page-about" class="page active">
       <section class="hero">
-        <div class="hero-layout">
-          <div class="hero-content">
-            <p class="hero-eyebrow">PhD Student &middot; ML Systems &amp; Generative AI</p>
-            <h1 class="hero-heading">
-              Hi, I'm Michael.<br>
-              <span class="hero-heading-muted">I build efficient systems for AI.</span>
-            </h1>
-            <p class="hero-body">
-              I'm a PhD student at USC's <a href="https://sportlab.usc.edu" target="_blank" rel="noopener">SPORT Lab</a>,
-              advised by Professor Massoud Pedram. My research focuses on the intersection of machine
-              learning systems and generative AI, specifically working with autoregressive models, GANs,
-              and diffusion models. I'm excited to dive deep into how we can optimize these architectures
-              for the next generation of AI applications.
-            </p>
-            <div class="hero-actions">
-              <button class="btn btn-primary" onclick="navigate('research')">View research</button>
-              <button class="btn btn-secondary" onclick="navigate('cv')">View CV</button>
-            </div>
-            <div class="hero-links">
-              <a class="hero-link" href="https://scholar.google.com/citations?user=pv8GmuwAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
-              <a class="hero-link" href="https://github.com/mordom01" target="_blank" rel="noopener">GitHub</a>
-              <a class="hero-link" href="https://linkedin.com/in/xiangboqi/" target="_blank" rel="noopener">LinkedIn</a>
-              <a class="hero-link" href="mailto:qim@usc.edu">Email</a>
-            </div>
-          </div>
-          <div class="hero-photo-wrap">
-            <img src="IMG_1225.jpg" alt="Michael Qi" class="hero-avatar">
-          </div>
+        <div class="hero-photo-wrap">
+          <img src="IMG_1225.jpg" alt="Michael Qi" class="hero-avatar">
+        </div>
+        <p class="hero-eyebrow">PhD Student &middot; ML Systems &amp; Generative AI</p>
+        <h1 class="hero-heading">
+          Hi, I'm Michael.<br>
+          <span class="hero-heading-muted">I build efficient systems for AI.</span>
+        </h1>
+        <p class="hero-body">
+          I'm a PhD student at USC's <a href="https://sportlab.usc.edu" target="_blank" rel="noopener">SPORT Lab</a>,
+          advised by Professor Massoud Pedram. My research focuses on the intersection of machine
+          learning systems and generative AI, specifically working with autoregressive models, GANs,
+          and diffusion models. I'm excited to dive deep into how we can optimize these architectures
+          for the next generation of AI applications.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="navigate('research')">View research</button>
+          <button class="btn btn-secondary" onclick="navigate('cv')">View CV</button>
+        </div>
+        <div class="hero-links">
+          <a class="hero-link" href="https://scholar.google.com/citations?user=pv8GmuwAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
+          <a class="hero-link" href="https://github.com/mordom01" target="_blank" rel="noopener">GitHub</a>
+          <a class="hero-link" href="https://linkedin.com/in/xiangboqi/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="hero-link" href="mailto:qim@usc.edu">Email</a>
         </div>
       </section>
 
@@ -918,7 +920,7 @@
             <div class="cv-years">2023–2026</div>
             <div>
               <div class="cv-entry-title">Undergraduate Research Assistant</div>
-              <div class="cv-entry-place">University of Southern California (Prof. Murali Annavaram)</div>
+              <div class="cv-entry-place">REAL@USC-Meta Center, University of Southern California (Prof. Murali Annavaram)</div>
               <div class="cv-entry-detail">Computer architecture and ML systems research; contributed to the Icy-Hot superconducting CPU project and NF4 dequantization kernel work.</div>
             </div>
           </div>
@@ -990,12 +992,10 @@
        Scripts
        ============================================================ -->
   <script>
-    // Restore theme before first paint
+    // Restore theme before first paint — default is light
     (function() {
       const saved = localStorage.getItem('theme');
       if (saved) document.documentElement.dataset.theme = saved;
-      else if (window.matchMedia('(prefers-color-scheme: dark)').matches)
-        document.documentElement.dataset.theme = 'dark';
     })();
 
     // Year in footer
