@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Michael Qi</title>
+  <meta name="description" content="Michael Qi — PhD student researching how people understand, trust, and push back on intelligent systems.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       Reset & Base
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ============================================================
+       Design Tokens
+       ============================================================ */
+    :root {
+      /* Colors */
+      --bg:            #F4F7F9;
+      --bg-surface:    #FFFFFF;
+      --bg-code:       #EDF2F7;
+      --bg-subtle:     #EBF0F5;
+
+      --fg:            #1A2332;
+      --fg2:           #5A6B7C;
+      --fg3:           #96A8B8;
+      --fg-on-accent:  #FFFFFF;
+
+      --accent:        #2B7A8C;
+      --accent-light:  #E3F2F5;
+      --accent-hover:  #1F5F6E;
+
+      --warm:          #C4704A;
+      --warm-light:    #F7EDE7;
+      --warm-hover:    #A85C3A;
+
+      --border:        #D8E2EC;
+      --border-hover:  #B8CCDC;
+
+      --shadow-1: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-2: 0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+
+      /* Typography */
+      --font-display: 'Source Serif 4', 'Times New Roman', serif;
+      --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+      --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+      /* Spacing */
+      --space-1:  4px;
+      --space-2:  8px;
+      --space-3:  12px;
+      --space-4:  16px;
+      --space-5:  24px;
+      --space-6:  32px;
+      --space-7:  48px;
+      --space-8:  64px;
+      --space-9:  96px;
+
+      --max-reading: 680px;
+      --max-layout:  1100px;
+      --nav-height:  60px;
+
+      /* Radii */
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      --radius-lg:   12px;
+      --radius-full: 9999px;
+    }
+
+    /* ============================================================
+       Global Defaults
+       ============================================================ */
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--fg);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 180ms ease;
+    }
+    a:hover { color: var(--accent-hover); }
+
+    /* ============================================================
+       Navigation
+       ============================================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--space-6);
+      border-bottom: 1px solid transparent;
+      transition: background 250ms ease, border-color 250ms ease, backdrop-filter 250ms ease;
+    }
+    .nav.scrolled {
+      background: rgba(244, 247, 249, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-color: var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--fg);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .nav-logo:hover { color: var(--fg); }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--fg2);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: color 180ms ease;
+    }
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--fg);
+    }
+    .nav-link.active { font-weight: 500; }
+
+    /* ============================================================
+       Page Sections (routed views)
+       ============================================================ */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ============================================================
+       Hero
+       ============================================================ */
+    .hero {
+      max-width: var(--max-reading);
+      margin: 0 auto;
+      padding: 80px var(--space-6) var(--space-9);
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg3);
+      margin-bottom: 20px;
+    }
+
+    .hero-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 3.5rem);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      font-weight: 400;
+      color: var(--fg);
+      margin: 0 0 28px;
+    }
+    .hero-heading-muted { color: var(--fg2); }
+
+    .hero-body {
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--fg2);
+      margin: 0 0 36px;
+      max-width: 560px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-links {
+      margin-top: 52px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .hero-link {
+      font-size: 13px;
+      color: var(--fg2);
+      text-decoration: none;
+      transition: color 180ms ease;
+    }
+    .hero-link:hover { color: var(--accent); }
+
+    /* ============================================================
+       Updates Feed
+       ============================================================ */
+    .updates-section {
+      border-top: 1px solid var(--border);
+    }
+
+    .updates {
+      max-width: var(--max-reading);
+      margin: 0 auto;
+      padding: 0 var(--space-6) var(--space-9);
+    }
+
+    .updates-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 32px;
+    }
+
+    .updates-subtitle {
+      font-size: 13px;
+      color: var(--fg3);
+    }
+
+    .update-row {
+      display: flex;
+      gap: 24px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .update-row:last-child { border-bottom: none; }
+
+    .update-date {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--fg3);
+      min-width: 72px;
+      padding-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .update-text {
+      font-size: 14px;
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       Research Page
+       ============================================================ */
+    .research-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-7) var(--space-6) var(--space-9);
+    }
+
+    .section-intro {
+      max-width: 560px;
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      font-family: var(--font-body);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--fg);
+      margin: 0 0 12px;
+    }
+
+    .section-description {
+      font-size: 15px;
+      color: var(--fg2);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    /* ============================================================
+       Project Card
+       ============================================================ */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-1);
+      transition: box-shadow 220ms ease, transform 220ms ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-2);
+      transform: translateY(-1px);
+    }
+
+    .card-thumb {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--fg3);
+    }
+
+    .card-body { padding: 20px; }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--fg);
+      line-height: 1.3;
+    }
+
+    .card-year {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--fg3);
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+
+    .card-description {
+      font-size: 13px;
+      color: var(--fg2);
+      line-height: 1.55;
+      margin: 0 0 14px;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* ============================================================
+       Tags
+       ============================================================ */
+    .tag {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+    .tag-default { background: var(--bg-subtle); color: var(--fg2); }
+    .tag-accent  { background: var(--accent-light); color: var(--accent); }
+    .tag-warm    { background: var(--warm-light); color: var(--warm); }
+
+    /* ============================================================
+       CV Page
+       ============================================================ */
+    .cv-section {
+      max-width: var(--max-reading);
+      margin: 0 auto;
+      padding: var(--space-7) var(--space-6) var(--space-9);
+    }
+
+    .cv-header { margin-bottom: 40px; }
+
+    .cv-name {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      margin: 0 0 6px;
+    }
+
+    .cv-tagline {
+      font-size: 14px;
+      color: var(--fg2);
+    }
+
+    .cv-group { margin-bottom: 40px; }
+
+    .cv-group-label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg3);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cv-entry {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+    .cv-entry:last-child { margin-bottom: 0; }
+
+    .cv-years {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--fg3);
+      min-width: 90px;
+      padding-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .cv-entry-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: 2px;
+    }
+
+    .cv-entry-place {
+      font-size: 13px;
+      color: var(--fg2);
+      margin-bottom: 4px;
+    }
+
+    .cv-entry-detail {
+      font-size: 13px;
+      color: var(--fg3);
+      line-height: 1.5;
+    }
+
+    .cv-skills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .skill-tag {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+      color: var(--fg2);
+    }
+
+    .cv-footer {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ============================================================
+       Buttons
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1;
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 180ms ease, box-shadow 180ms ease, transform 120ms ease, color 180ms ease;
+    }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--fg-on-accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: var(--fg-on-accent);
+      box-shadow: var(--shadow-1);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-subtle);
+      color: var(--fg);
+    }
+
+    /* ============================================================
+       Footer
+       ============================================================ */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 24px var(--space-6);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--fg3);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .footer-link {
+      font-size: 13px;
+      color: var(--fg3);
+      text-decoration: none;
+      transition: color 180ms ease;
+    }
+    .footer-link:hover { color: var(--accent); }
+
+    /* ============================================================
+       Section Header (shared h2 style)
+       ============================================================ */
+    .h2 {
+      font-family: var(--font-body);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--fg);
+      margin: 0 0 12px;
+    }
+
+    /* ============================================================
+       Responsive
+       ============================================================ */
+    @media (max-width: 600px) {
+      .nav { padding: 0 var(--space-4); }
+      .nav-links { gap: 16px; }
+      .hero { padding: 48px var(--space-4) 64px; }
+      .updates { padding: 0 var(--space-4) 64px; }
+      .research-section { padding: var(--space-6) var(--space-4) 64px; }
+      .cv-section { padding: var(--space-6) var(--space-4) 64px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .hero-links { gap: 16px; }
+      .site-footer { padding: 24px var(--space-4); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       Navigation
+       ============================================================ -->
+  <header class="nav" id="nav">
+    <button class="nav-logo" onclick="navigate('about')">Michael Qi</button>
+    <nav>
+      <ul class="nav-links">
+        <li><button class="nav-link active" data-page="about"    onclick="navigate('about')">about</button></li>
+        <li><button class="nav-link"        data-page="research" onclick="navigate('research')">research</button></li>
+        <li><button class="nav-link"        data-page="projects" onclick="navigate('projects')">projects</button></li>
+        <li><button class="nav-link"        data-page="cv"       onclick="navigate('cv')">cv</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ============================================================
+       Main
+       ============================================================ -->
+  <main id="main">
+
+    <!-- About Page -->
+    <div id="page-about" class="page active">
+      <section class="hero">
+        <p class="hero-eyebrow">PhD Student &middot; ECE / HCI</p>
+        <h1 class="hero-heading">
+          Hi, I'm Michael.<br>
+          <span class="hero-heading-muted">I study how people make sense of AI.</span>
+        </h1>
+        <p class="hero-body">
+          I'm a first-year PhD student at [University], working at the intersection of
+          human-computer interaction and electrical &amp; computer engineering. I'm interested
+          in how people understand, trust, and push back on intelligent systems.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="navigate('research')">View research</button>
+          <button class="btn btn-secondary" onclick="navigate('cv')">Download CV</button>
+        </div>
+        <div class="hero-links">
+          <a class="hero-link" href="https://arxiv.org" target="_blank" rel="noopener">arXiv</a>
+          <a class="hero-link" href="https://github.com/mordom01" target="_blank" rel="noopener">GitHub</a>
+          <a class="hero-link" href="https://twitter.com" target="_blank" rel="noopener">Twitter / X</a>
+          <a class="hero-link" href="mailto:michaelqi0506@gmail.com">Email</a>
+        </div>
+      </section>
+
+      <div class="updates-section">
+        <section class="updates">
+          <div class="updates-header">
+            <h2 class="h2">Updates</h2>
+            <span class="updates-subtitle">what I've been up to</span>
+          </div>
+          <div>
+            <div class="update-row">
+              <div class="update-date">Apr 2026</div>
+              <div class="update-text">
+                Submitted first-author preprint to arXiv — "Legibility Gaps in LLM Explanations." &mdash;
+                <a href="https://arxiv.org" target="_blank" rel="noopener">read</a>
+              </div>
+            </div>
+            <div class="update-row">
+              <div class="update-date">Mar 2026</div>
+              <div class="update-text">Presented work-in-progress at lab seminar. Great feedback from the group.</div>
+            </div>
+            <div class="update-row">
+              <div class="update-date">Feb 2026</div>
+              <div class="update-text">Started collaborating with [Collaborator] on a study examining user mental models of AI assistants.</div>
+            </div>
+            <div class="update-row">
+              <div class="update-date">Jan 2026</div>
+              <div class="update-text">Officially started my PhD at [University]. Joining the [Lab Name] lab, advised by [Advisor].</div>
+            </div>
+            <div class="update-row">
+              <div class="update-date">Dec 2025</div>
+              <div class="update-text">Graduated from [Undergrad University] with a B.S. in ECE. Thanks to everyone who helped along the way.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Research Page -->
+    <div id="page-research" class="page">
+      <section class="research-section">
+        <div class="section-intro">
+          <h2 class="section-title">Research</h2>
+          <p class="section-description">
+            I'm broadly interested in how people understand, interrogate, and live with AI systems.
+            My work combines user studies, interface design, and systems thinking.
+          </p>
+        </div>
+        <div class="cards-grid">
+
+          <div class="card">
+            <div class="card-thumb" style="background: #E3F2F5;"></div>
+            <div class="card-body">
+              <div class="card-top">
+                <div class="card-title">Legibility Gaps in LLM Explanations</div>
+                <div class="card-year">2026</div>
+              </div>
+              <p class="card-description">
+                How do users interpret AI-generated natural language explanations in high-stakes
+                decision contexts? A mixed-methods study examining comprehension, trust, and
+                contestation behaviors.
+              </p>
+              <div class="card-tags">
+                <span class="tag tag-accent">HCI</span>
+                <span class="tag tag-default">NLP</span>
+                <span class="tag tag-warm">Preprint</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-thumb" style="background: #F7EDE7;"></div>
+            <div class="card-body">
+              <div class="card-top">
+                <div class="card-title">Interface Audit Tool</div>
+                <div class="card-year">2025</div>
+              </div>
+              <p class="card-description">
+                A browser extension for surfacing and labeling dark patterns in consumer-facing UIs.
+                Built with [Collaborator] as an undergrad project; now an open-source tool with 400+ users.
+              </p>
+              <div class="card-tags">
+                <span class="tag tag-default">Design</span>
+                <span class="tag tag-accent">Open Source</span>
+                <span class="tag tag-default">Tools</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-thumb" style="background: #EBF0F5;"></div>
+            <div class="card-body">
+              <div class="card-top">
+                <div class="card-title">Mental Models of AI Assistants</div>
+                <div class="card-year">2026</div>
+              </div>
+              <p class="card-description">
+                Ongoing interview study exploring how everyday users conceptualize the "reasoning" of
+                large language model chat assistants. N=24, in progress.
+              </p>
+              <div class="card-tags">
+                <span class="tag tag-default">Qualitative</span>
+                <span class="tag tag-warm">In Progress</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+    <!-- Projects Page (same view as research for now) -->
+    <div id="page-projects" class="page">
+      <section class="research-section">
+        <div class="section-intro">
+          <h2 class="section-title">Projects</h2>
+          <p class="section-description">
+            Side projects, tools, and experiments — things I've built to scratch a particular itch
+            or explore an idea outside of formal research.
+          </p>
+        </div>
+        <div class="cards-grid">
+
+          <div class="card">
+            <div class="card-thumb" style="background: #F7EDE7;"></div>
+            <div class="card-body">
+              <div class="card-top">
+                <div class="card-title">Interface Audit Tool</div>
+                <div class="card-year">2025</div>
+              </div>
+              <p class="card-description">
+                Browser extension that surfaces and labels dark patterns in consumer-facing UIs.
+                Open-source, 400+ users.
+              </p>
+              <div class="card-tags">
+                <span class="tag tag-accent">Open Source</span>
+                <span class="tag tag-default">Tools</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-thumb" style="background: #EBF0F5;"></div>
+            <div class="card-body">
+              <div class="card-top">
+                <div class="card-title">mordom01.github.io</div>
+                <div class="card-year">2026</div>
+              </div>
+              <p class="card-description">
+                This site. Built with plain HTML/CSS/JS using a custom design system.
+                Source on GitHub.
+              </p>
+              <div class="card-tags">
+                <span class="tag tag-default">Design</span>
+                <span class="tag tag-accent">Open Source</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+    <!-- CV Page -->
+    <div id="page-cv" class="page">
+      <section class="cv-section">
+        <div class="cv-header">
+          <h1 class="cv-name">Michael Qi</h1>
+          <p class="cv-tagline">
+            PhD Student &middot; [University] &middot;
+            <a href="mailto:michaelqi0506@gmail.com">michaelqi0506@gmail.com</a>
+          </p>
+        </div>
+
+        <div class="cv-group">
+          <div class="cv-group-label">Education</div>
+          <div class="cv-entry">
+            <div class="cv-years">2025–</div>
+            <div>
+              <div class="cv-entry-title">PhD in Computer Science / ECE</div>
+              <div class="cv-entry-place">[University]</div>
+              <div class="cv-entry-detail">Advised by [Advisor]. Focus: HCI, AI legibility.</div>
+            </div>
+          </div>
+          <div class="cv-entry">
+            <div class="cv-years">2021–25</div>
+            <div>
+              <div class="cv-entry-title">B.S. Electrical &amp; Computer Engineering</div>
+              <div class="cv-entry-place">[Undergrad University]</div>
+              <div class="cv-entry-detail">GPA: X.XX / 4.0. Thesis: [Thesis Title].</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cv-group">
+          <div class="cv-group-label">Research</div>
+          <div class="cv-entry">
+            <div class="cv-years">2025–</div>
+            <div>
+              <div class="cv-entry-title">Graduate Research Assistant</div>
+              <div class="cv-entry-place">[Lab Name], [University]</div>
+              <div class="cv-entry-detail">Studying how users interpret and contest AI-generated explanations.</div>
+            </div>
+          </div>
+          <div class="cv-entry">
+            <div class="cv-years">2024</div>
+            <div>
+              <div class="cv-entry-title">Undergraduate Research Assistant</div>
+              <div class="cv-entry-place">[Undergrad Lab]</div>
+              <div class="cv-entry-detail">Contributed to studies on interface dark patterns.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cv-group">
+          <div class="cv-group-label">Publications</div>
+          <div class="cv-entry">
+            <div class="cv-years">2026</div>
+            <div>
+              <div class="cv-entry-title">Legibility Gaps in LLM Explanations</div>
+              <div class="cv-entry-place">arXiv preprint</div>
+              <div class="cv-entry-detail">Michael Qi, [Co-author]. Under review at CHI 2027.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cv-group">
+          <div class="cv-group-label">Teaching</div>
+          <div class="cv-entry">
+            <div class="cv-years">Fall 2025</div>
+            <div>
+              <div class="cv-entry-title">Teaching Assistant</div>
+              <div class="cv-entry-place">CS 101: Intro to Computing</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cv-group">
+          <div class="cv-group-label">Skills</div>
+          <div class="cv-skills">
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">R</span>
+            <span class="skill-tag">TypeScript</span>
+            <span class="skill-tag">React</span>
+            <span class="skill-tag">Figma</span>
+            <span class="skill-tag">PyTorch</span>
+            <span class="skill-tag">Qualitative Methods</span>
+            <span class="skill-tag">Survey Design</span>
+            <span class="skill-tag">MATLAB</span>
+            <span class="skill-tag">C++</span>
+          </div>
+        </div>
+
+        <div class="cv-footer">
+          <a href="#" style="font-size: 13px;">Download PDF version &rarr;</a>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       Footer
+       ============================================================ -->
+  <footer class="site-footer">
+    <span class="footer-copy">Michael Qi &middot; <span id="year"></span></span>
+    <ul class="footer-links">
+      <li><a class="footer-link" href="https://arxiv.org" target="_blank" rel="noopener">arXiv</a></li>
+      <li><a class="footer-link" href="https://github.com/mordom01" target="_blank" rel="noopener">GitHub</a></li>
+      <li><a class="footer-link" href="https://twitter.com" target="_blank" rel="noopener">Twitter / X</a></li>
+      <li><a class="footer-link" href="mailto:michaelqi0506@gmail.com">Email</a></li>
+    </ul>
+  </footer>
+
+  <!-- ============================================================
+       Scripts
+       ============================================================ -->
+  <script>
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Scroll-based nav blur
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    // Page routing
+    function navigate(page) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      // Show target
+      document.getElementById('page-' + page).classList.add('active');
+      // Update nav links
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.toggle('active', link.dataset.page === page);
+      });
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  </script>
+
+</body>
+</html>
